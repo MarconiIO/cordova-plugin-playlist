@@ -10,7 +10,6 @@ static char kPlayerItemTimeRangesContext;
 
 @interface RmxAudioPlayer() {
     id _playbackTimeObserver;
-    BOOL _wasPlayingInterrupted;
     BOOL _commandCenterRegistered;
     BOOL _resetStreamOnPause;
     NSMutableDictionary* _updatedNowPlayingInfo;
@@ -37,7 +36,6 @@ static char kPlayerItemTimeRangesContext;
 - (void) pluginInitialize
 {
     _playbackTimeObserver = nil;
-    _wasPlayingInterrupted = NO;
     _commandCenterRegistered = NO;
     _updatedNowPlayingInfo = nil;
     _resetStreamOnPause = YES;
@@ -482,7 +480,6 @@ static char kPlayerItemTimeRangesContext;
 
 - (void) playCommand:(BOOL)isCommand
 {
-    _wasPlayingInterrupted = NO;
     [self initializeMPCommandCenter];
     // [[self avQueuePlayer] play];
 
@@ -505,7 +502,6 @@ static char kPlayerItemTimeRangesContext;
 
 - (void) pauseCommand:(BOOL)isCommand
 {
-    _wasPlayingInterrupted = NO;
     [self initializeMPCommandCenter];
     [[self avQueuePlayer] pause];
 
@@ -530,7 +526,6 @@ static char kPlayerItemTimeRangesContext;
 
 - (void) playPrevious:(BOOL)isCommand
 {
-    _wasPlayingInterrupted = NO;
     [self initializeMPCommandCenter];
 
     [[self avQueuePlayer] playPreviousItem];
@@ -550,7 +545,6 @@ static char kPlayerItemTimeRangesContext;
 
 - (void) playNext:(BOOL)isCommand
 {
-    _wasPlayingInterrupted = NO;
     [self initializeMPCommandCenter];
 
     [[self avQueuePlayer] advanceToNextItem];
@@ -571,7 +565,6 @@ static char kPlayerItemTimeRangesContext;
 - (void) seekTo:(float)positionTime isCommand:(BOOL)isCommand
 {
     //Handle seeking with the progress slider on lockscreen or control center
-    _wasPlayingInterrupted = NO;
     [self initializeMPCommandCenter];
 
     CMTime seekToTime = CMTimeMakeWithSeconds(positionTime, 1000);
@@ -642,7 +635,6 @@ static char kPlayerItemTimeRangesContext;
     }
 
     [[self avQueuePlayer] removeAllItems];
-    _wasPlayingInterrupted = NO;
 
     NSLog(@"RmxAudioPlayer, removeAllTracks, ==> RMXSTATUS_PLAYLIST_CLEARED");
     [self onStatus:RMXSTATUS_PLAYLIST_CLEARED trackId:@"INVALID" param:nil];
@@ -748,23 +740,16 @@ static char kPlayerItemTimeRangesContext;
         case AVAudioSessionInterruptionTypeBegan: {
             BOOL suspended = [userInfo[AVAudioSessionInterruptionWasSuspendedKey] boolValue];
             NSLog(@"AVAudioSessionInterruptionTypeBegan. Was suspended: %d", suspended);
-            if ([[self avQueuePlayer] isPlaying]) {
-                _wasPlayingInterrupted = YES;
-            }
 
-            // [[self avQueuePlayer] pause];
-            [self pauseCommand:NO];
             break;
         }
         case AVAudioSessionInterruptionTypeEnded: {
             NSLog(@"AVAudioSessionInterruptionTypeEnded");
             AVAudioSessionInterruptionOptions interruptionOption = [userInfo[AVAudioSessionInterruptionOptionKey] unsignedIntegerValue];
             if (interruptionOption == AVAudioSessionInterruptionOptionShouldResume) {
-                if (_wasPlayingInterrupted) {
-                    [[self avQueuePlayer] play];
-                }
+                [[self avQueuePlayer] play];
             }
-            _wasPlayingInterrupted = NO;
+
             break;
         }
         default:
