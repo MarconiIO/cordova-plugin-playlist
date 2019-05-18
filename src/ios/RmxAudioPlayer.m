@@ -835,7 +835,7 @@ static char kPlayerItemTimeRangesContext;
 
 - (void) updateNowPlayingTrackInfo:(AudioTrack*)playerItem updateTrackData:(BOOL)updateTrackData
 {
-    AudioTrack* currentItem = playerItem;
+    /*AudioTrack* currentItem = playerItem;
     if (currentItem == nil) {
         currentItem = (AudioTrack*)[self avQueuePlayer].currentItem;
     }
@@ -876,6 +876,7 @@ static char kPlayerItemTimeRangesContext;
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     [commandCenter.nextTrackCommand setEnabled:!self.isAtEnd];
     [commandCenter.previousTrackCommand setEnabled:!self.isAtBeginning];
+    */
 }
 
 - (MPMediaItemArtwork *) createCoverArtwork: (NSString *) coverUri {
@@ -1186,7 +1187,7 @@ static char kPlayerItemTimeRangesContext;
 - (void) initializeMPCommandCenter
 {
     if (!_commandCenterRegistered) {
-        MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+        /*MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
         [commandCenter.playCommand setEnabled:true];
         [commandCenter.playCommand addTarget:self action:@selector(playEvent:)];
         [commandCenter.pauseCommand setEnabled:true];
@@ -1201,7 +1202,7 @@ static char kPlayerItemTimeRangesContext;
         if (@available(iOS 9.0, *)) {
             [commandCenter.changePlaybackPositionCommand setEnabled:true];
             [commandCenter.changePlaybackPositionCommand addTarget:self action:@selector(changedThumbSliderOnLockScreen:)];
-        }
+        } */
 
         _commandCenterRegistered = YES;
     }
@@ -1425,7 +1426,7 @@ static char kPlayerItemTimeRangesContext;
     // [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     // [[NSNotificationCenter defaultCenter] removeObserver:self name:@"receivedEvent" object:nil];
 
-    MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+    /*MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     [commandCenter.playCommand removeTarget:self];
     [commandCenter.pauseCommand removeTarget:self];
     [commandCenter.nextTrackCommand removeTarget:self];
@@ -1436,7 +1437,7 @@ static char kPlayerItemTimeRangesContext;
     if (@available(iOS 9.0, *)) {
         [commandCenter.changePlaybackPositionCommand setEnabled:false];
         [commandCenter.changePlaybackPositionCommand removeTarget:self action:NULL];
-    }
+    }*/
 
     _commandCenterRegistered = NO;
 }
