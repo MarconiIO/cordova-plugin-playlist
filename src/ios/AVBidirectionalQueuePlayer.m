@@ -147,11 +147,6 @@
     // NSUInteger tempNowPlayingIndex = [_itemsForPlayer indexOfObject: self.currentItem];
 
     // if (tempNowPlayingIndex != NSNotFound){
-        float currentrate = self.rate;
-        if (currentrate > 0) {
-            [self pause];
-        }
-
         // Note: it is necessary to have seekToTime called twice in this method, once before and once after re-making the area. If it is not present before, the player will resume from the same spot in the next item when the previous item finishes playing; if it is not present after, the previous item will be played from the same spot that the current item was on.
         [self seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         // The next two lines are necessary since RemoveAllItems resets both the nowPlayingIndex and _itemsForPlayer
