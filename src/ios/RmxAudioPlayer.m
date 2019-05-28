@@ -17,6 +17,7 @@ static char kPlayerItemTimeRangesContext;
     float _volume;
     BOOL _isReplacingItems;
     BOOL _isWaitingToStartPlayback;
+    AVPlayerViewController* _viewController;
 }
 @property () NSString* statusCallbackId;
 @property (nonatomic, strong) AVBidirectionalQueuePlayer* avQueuePlayer;
@@ -889,8 +890,8 @@ static char kPlayerItemTimeRangesContext;
     nowPlayingInfoCenter.nowPlayingInfo = _updatedNowPlayingInfo;
 
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
-    [commandCenter.nextTrackCommand setEnabled:!self.isAtEnd && !self.loop];
-    [commandCenter.previousTrackCommand setEnabled:!self.isAtBeginning && !self.loop];
+    [commandCenter.nextTrackCommand setEnabled:!self.isAtEnd || self.loop];
+    [commandCenter.previousTrackCommand setEnabled:!self.isAtBeginning || self.loop];
 }
 
 - (MPMediaItemArtwork *) createCoverArtwork: (NSString *) coverUri {
@@ -1266,6 +1267,18 @@ static char kPlayerItemTimeRangesContext;
                 [strongSelf executePeriodicUpdate:time];
             }
         }];
+
+        if (_viewController == nil) {
+            _viewController = [[AVPlayerViewController alloc] init];
+            _viewController.player = _avQueuePlayer;
+            _viewController.updatesNowPlayingInfoCenter = YES;
+            _viewController.view.hidden = YES;
+        
+            [self.viewController addChildViewController:_viewController];
+            [self.viewController.view addSubview:_viewController.view];
+        } else {
+            _viewController.player = _avQueuePlayer;
+        }
 
         // Put this behind a flag.
         _avQueuePlayer.automaticallyWaitsToMinimizeStalling = NO;

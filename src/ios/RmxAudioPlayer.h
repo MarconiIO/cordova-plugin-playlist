@@ -9,6 +9,7 @@
 #define RmxAudioPlayer_h
 
 #import <UIKit/UIKit.h>
+#import <AVKit/AVKit.h>
 #import <Cordova/CDVPlugin.h> // this already includes Foundation.h
 #import <MediaPlayer/MediaPlayer.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
