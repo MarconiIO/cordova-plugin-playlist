@@ -60,8 +60,8 @@
     @"trackId": self.trackId,
     @"assetUrl": [self.assetUrl absoluteString],
     @"albumArt": self.albumArt != nil ? [self.albumArt absoluteString] : @"",
-    @"artist": self.artist,
-    @"album": self.album,
+    @"artist": self.artist != nil ? self.artist : @"",
+    @"album": self.album != nil ? self.album : @"",
     @"title": self.title
   };
 
